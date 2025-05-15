@@ -116,7 +116,7 @@
             var response = await Http.DeleteAsync($"api/employees/{model.EmployeeId}");
             if (response.IsSuccessStatusCode)
             {
-                employeeData.Remove(model);
+                await LoadData();
                 NotificationService.Notify(NotificationSeverity.Success, "Employee deleted successfully");
                 StateHasChanged();
             }

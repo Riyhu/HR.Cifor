@@ -54,11 +54,15 @@ public class EmployeeService(DataContext dataContext, IMapper mapper)
 
     public async Task<bool> DeleteAsync(string employeeId)
     {
-        var existing = await dataContext.Employee.FindAsync(employeeId);
+        var existing = await dataContext.Employee
+            .Where(e => e.EmployeeId.ToString() == employeeId)
+            .FirstOrDefaultAsync();
+
         if (existing == null) return false;
 
         dataContext.Employee.Remove(existing);
         await dataContext.SaveChangesAsync();
         return true;
     }
+
 }
