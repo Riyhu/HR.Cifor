@@ -1,0 +1,6 @@
+@HR.Cifor.WebApi_HostAddress = http://localhost:5265
+
+GET {{HR.Cifor.WebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
