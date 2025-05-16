@@ -9,6 +9,12 @@
     <RadzenIcon Icon="table_view" />
 </RadzenText>
 
+<RadzenStack Orientation="Orientation.Horizontal" Gap="10px" class="mb-4">
+    <RadzenTextBox @bind-Value="searchName" Placeholder="Search by Name" Style="width: 200px;" />
+    <RadzenTextBox @bind-Value="searchDepartment" Placeholder="Search by Department" Style="width: 200px;" />
+    <RadzenButton Click="LoadData" Icon="search" Text="Search" />
+</RadzenStack>
+
 <RadzenStack Orientation="Orientation.Horizontal" class="mb-4">
     <RadzenButton Click="Create" Icon="add" Text="Create New Employee" class="mr-2" />
 </RadzenStack>
@@ -36,6 +42,8 @@
     private string editMode = "";
     private EmployeeModel editModel = new();
     private List<EmployeeModel> employeeData = new();
+    private string searchName = string.Empty;
+    private string searchDepartment = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -44,7 +52,8 @@
 
     private async Task LoadData()
     {
-        employeeData = await Http.GetFromJsonAsync<List<EmployeeModel>>("api/employees") ?? new List<EmployeeModel>();
+        var url = $"api/employees/search?name={Uri.EscapeDataString(searchName ?? "")}&department={Uri.EscapeDataString(searchDepartment ?? "")}";
+        employeeData = await Http.GetFromJsonAsync<List<EmployeeModel>>(url) ?? new();
     }
 
     async Task ShowEdit()

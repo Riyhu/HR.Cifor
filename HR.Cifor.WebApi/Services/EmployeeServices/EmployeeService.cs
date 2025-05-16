@@ -25,10 +25,10 @@ public class EmployeeService(DataContext dataContext, IMapper mapper)
         IQueryable<Employee> query = dataContext.Employee.AsNoTracking();
 
         if (!string.IsNullOrWhiteSpace(name))
-            query = query.Where(e => e.Name.Contains(name));
+            query = query.Where(e => e.Name.ToLower().Contains(name.ToLower()));
 
         if (!string.IsNullOrWhiteSpace(department))
-            query = query.Where(e => e.Department.Contains(department));
+            query = query.Where(e => e.Department.ToLower().Contains(department.ToLower())); ;
 
         var entities = await query.ToListAsync();
         return mapper.Map<List<EmployeeModel>>(entities);
