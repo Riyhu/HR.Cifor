@@ -9,11 +9,31 @@
     <RadzenIcon Icon="table_view" />
 </RadzenText>
 
-<RadzenStack Orientation="Orientation.Horizontal" Gap="10px" class="mb-4">
-    <RadzenTextBox @bind-Value="searchName" Placeholder="Search by Name" Style="width: 200px;" />
-    <RadzenTextBox @bind-Value="searchDepartment" Placeholder="Search by Department" Style="width: 200px;" />
-    <RadzenButton Click="LoadData" Icon="search" Text="Search" />
-</RadzenStack>
+<RadzenAccordion class="rz-mb-4">
+    <Items>
+        <RadzenAccordionItem Text="Filter" Icon="filter_alt" @bind-Expanded="@isExpand">
+            <RadzenRow>
+                <RadzenColumn SizeLG="2">
+                    <RadzenFormField Text="Name" class="w-100">
+                    <RadzenTextBox @bind-Value="searchName" Placeholder="Name" Style="width: 200px;" />
+                    </RadzenFormField>
+                </RadzenColumn>
+
+                <RadzenColumn SizeLG="2">
+                    <RadzenFormField Text="Department" class="w-100">
+                    <RadzenTextBox @bind-Value="searchDepartment" Placeholder="Department" Style="width: 200px;" />
+                    </RadzenFormField>
+                </RadzenColumn>
+            </RadzenRow>
+            <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Start" class="rz-mt-5">
+                <RadzenButton ButtonStyle="ButtonStyle.Success" Click="LoadData" Text="Apply Filter" Icon="done_all" class="rz-mr-1" />
+                <RadzenButton ButtonStyle="ButtonStyle.Light" Click="ResetFilter" Text="Reset Filter" Icon="restart_alt" />
+            </RadzenStack>
+        </RadzenAccordionItem>
+    </Items>
+</RadzenAccordion>
+
+
 
 <RadzenStack Orientation="Orientation.Horizontal" class="mb-4">
     <RadzenButton Click="Create" Icon="add" Text="Create New Employee" class="mr-2" />
@@ -44,6 +64,7 @@
     private List<EmployeeModel> employeeData = new();
     private string searchName = string.Empty;
     private string searchDepartment = string.Empty;
+    private bool isExpand = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,6 +75,13 @@
     {
         var url = $"api/employees/search?name={Uri.EscapeDataString(searchName ?? "")}&department={Uri.EscapeDataString(searchDepartment ?? "")}";
         employeeData = await Http.GetFromJsonAsync<List<EmployeeModel>>(url) ?? new();
+    }
+
+    private async Task ResetFilter()
+    {
+        searchName = "";
+        searchDepartment = "";
+        await LoadData();
     }
 
     async Task ShowEdit()
